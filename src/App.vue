@@ -1,35 +1,41 @@
 <template>
   <div id="app">
-    <section>
+    <section style="width:40vw;">
       <b-field>
         <b-checkbox v-model="major">Breaking change</b-checkbox>
-        <b-checkbox v-model="scopeOption">Add scope?</b-checkbox>
+        <b-checkbox v-model="scopeOption">Add scope</b-checkbox>
       </b-field>
       <b-field>
         <b-select placeholder="type" v-model="type">
           <option v-for="type in $options.TYPES_LIST" :value="type" :key="type">
-            {{ type }}{{ major ? "!" : "" }}
+            {{ major ? `${type}!` : type + String.fromCharCode(160) }}
           </option>
         </b-select>
-        <b-input
-          v-if="scopeOption"
-          v-model="scope"
-          placeholder="scope"
-          maxlength="10"
-        >
-        </b-input>
-        <b-input
-          placeholder="description"
-          v-model="description"
-          maxlength="100"
-        >
-        </b-input>
+        <div class="columns is-gapless" style="width:100%">
+          <b-input
+            v-if="scopeOption"
+            v-model="scope"
+            placeholder="scope"
+            class="column"
+            maxlength="10"
+          >
+          </b-input>
+
+          <b-input
+            placeholder="description"
+            v-model="description"
+            :class="{ 'is-three-quarters': scopeOption }"
+            class="column"
+            maxlength="100"
+          >
+          </b-input>
+        </div>
         <div class="block" @click="copyHeader">
           <b-icon
             pack="fas"
             icon="clipboard"
             size="is-medium"
-            style="position:relative; top:4px;left:2px"
+            style="position:relative; top:4px;left:2px; cursor:pointer"
           >
           </b-icon>
         </div>
@@ -42,6 +48,8 @@
 </template>
 
 <script>
+import { SnackbarProgrammatic as Snackbar } from "buefy";
+
 export default {
   name: "App",
   data() {
@@ -67,6 +75,8 @@ export default {
     "test",
   ],
   methods: {
+    validate() {},
+
     copyHeader() {
       let text = this.type;
       if (this.major) text += "!";
@@ -76,6 +86,13 @@ export default {
       navigator.clipboard.writeText(text).then(
         function() {
           console.log(text);
+          Snackbar.open({
+            duration: 5000,
+            message: "Header has been copied!",
+            type: "is-success",
+            position: "is-bottom-right",
+            queue: false,
+          });
         },
         function(err) {
           console.error("Async: Could not copy text: ", err);
