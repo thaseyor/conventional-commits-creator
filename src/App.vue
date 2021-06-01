@@ -82,6 +82,10 @@ export default {
           desc: "Build the project or change external dependencies",
         },
         {
+          type: "chore",
+          desc: "Miscellaneous commits e.g. modifying .gitignore",
+        },
+        {
           type: "ci",
           desc: "Setting up CI and working with scripts",
         },
