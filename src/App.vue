@@ -6,6 +6,19 @@
         <b-checkbox v-model="scopeOption">Add scope</b-checkbox>
       </b-field>
       <b-field>
+        <div
+          class="block"
+          @click="isModalActive = !isModalActive"
+          style="position:absolute;"
+        >
+          <b-icon
+            pack="fas"
+            icon="question-circle"
+            style="position:absolute;right:0px;padding-top:10px;cursor:pointer"
+            size="is-medium"
+          >
+          </b-icon>
+        </div>
         <b-select placeholder="type" v-model="type">
           <option v-for="type in $options.TYPES_LIST" :value="type" :key="type">
             {{ major ? `${type}!` : type + String.fromCharCode(160) }}
@@ -44,6 +57,9 @@
         <b-input type="textarea" placeholder="body/footer"></b-input>
       </b-field>
     </section>
+    <b-modal v-model="isModalActive">
+      <b-table :data="data" :columns="columns" :show-header="false"></b-table>
+    </b-modal>
   </div>
 </template>
 
@@ -57,8 +73,61 @@ export default {
       type: "feat",
       major: false,
       scopeOption: false,
+      isModalActive: false,
       scope: "",
       description: "",
+      data: [
+        {
+          type: "build",
+          desc: "Build the project or change external dependencies",
+        },
+        {
+          type: "ci",
+          desc: "Setting up CI and working with scripts",
+        },
+        {
+          type: "docs",
+          desc: "Documentation update",
+        },
+        {
+          type: "feat",
+          desc: "Adding new functionality",
+        },
+        {
+          type: "fix",
+          desc: "Bug fixes",
+        },
+        {
+          type: "perf",
+          desc: "Changes to improve performance",
+        },
+        {
+          type: "refactor",
+          desc: "Code changes without fixing bugs or adding new features",
+        },
+        {
+          type: "revert",
+          desc: "Rollback to previous commits",
+        },
+        {
+          type: "style",
+          desc: "Codestyle edits (tabs, indents, periods, commas, etc.)",
+        },
+        {
+          type: "test",
+          desc: "Changes to tests",
+        },
+      ],
+      columns: [
+        {
+          field: "type",
+          label: "Type",
+        },
+        {
+          field: "desc",
+          label: "Description",
+        },
+      ],
     };
   },
   TYPES_LIST: [
