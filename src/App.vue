@@ -1,60 +1,39 @@
 <template>
   <div id="app">
-    <section style="width:40vw;">
+    <section>
       <b-field>
         <b-checkbox v-model="major">Breaking change</b-checkbox>
         <b-checkbox v-model="scopeOption">Add scope</b-checkbox>
       </b-field>
       <b-field>
-        <div
-          class="block"
-          @click="isModalActive = !isModalActive"
-          style="position:absolute;"
-        >
-          <b-icon
-            pack="fas"
-            icon="question-circle"
-            style="position:absolute;right:0px;padding-top:10px;cursor:pointer"
-            size="is-medium"
-          >
-          </b-icon>
+        <div class="control">
+          <b-button icon-left="help" @click="isModalActive = !isModalActive" />
         </div>
         <b-select placeholder="type" v-model="type">
           <option v-for="type in $options.TYPES_LIST" :value="type" :key="type">
             {{ major ? `${type}!` : type + String.fromCharCode(160) }}
           </option>
         </b-select>
-        <div class="columns is-gapless" style="width:100%">
-          <b-input
-            v-if="scopeOption"
-            v-model="scope"
-            placeholder="scope"
-            class="column"
-            maxlength="10"
-          >
-          </b-input>
-
-          <b-input
-            placeholder="description"
-            v-model="description"
-            :class="{ 'is-three-quarters': scopeOption }"
-            class="column"
-            maxlength="100"
-          >
-          </b-input>
-        </div>
-        <div class="block" @click="copyHeader">
-          <b-icon
-            pack="fas"
-            icon="clipboard"
-            size="is-medium"
-            style="position:relative; top:4px;left:2px; cursor:pointer"
-          >
-          </b-icon>
-        </div>
-      </b-field>
-      <b-field>
-        <b-input type="textarea" placeholder="body/footer"></b-input>
+        <b-input
+          v-if="scopeOption"
+          v-model="scope"
+          placeholder="scope"
+          maxlength="10"
+        >
+        </b-input>
+        <b-input
+          placeholder="description"
+          v-model="description"
+          maxlength="100"
+        >
+        </b-input>
+        <p class="control">
+          <b-button
+            type="is-transparent"
+            icon-right="clipboard"
+            @click="copyHeader"
+          />
+        </p>
       </b-field>
     </section>
     <b-modal v-model="isModalActive">
@@ -148,9 +127,17 @@ export default {
     "test",
   ],
   methods: {
-    validate() {},
-
     copyHeader() {
+      if (!this.description.length) {
+        Snackbar.open({
+          duration: 3000,
+          message: "It is necessary to write a description",
+          type: "is-danger",
+          position: "is-bottom-right",
+          queue: false,
+        });
+        return;
+      }
       let text = this.type;
       if (this.major) text += "!";
       if (this.scopeOption && this.scope) text += `(${this.scope})`;
@@ -158,7 +145,6 @@ export default {
 
       navigator.clipboard.writeText(text).then(
         function() {
-          console.log(text);
           Snackbar.open({
             duration: 5000,
             message: "Header has been copied!",
