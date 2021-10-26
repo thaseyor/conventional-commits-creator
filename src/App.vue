@@ -127,9 +127,17 @@ export default {
     "test",
   ],
   methods: {
-    validate() {},
-
     copyHeader() {
+      if (!this.description.length) {
+        Snackbar.open({
+          duration: 3000,
+          message: "It is necessary to write a description",
+          type: "is-danger",
+          position: "is-bottom-right",
+          queue: false,
+        });
+        return;
+      }
       let text = this.type;
       if (this.major) text += "!";
       if (this.scopeOption && this.scope) text += `(${this.scope})`;
